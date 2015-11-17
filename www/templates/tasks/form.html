@@ -1,0 +1,21 @@
+<ion-view view-title="Create Task">
+	<ion-content class="has-header">
+
+		<div class="list">
+		  <label class="item item-input item-stacked-label">
+		    <span class="input-label">Title</span>
+		    <input type="text" placeholder="Enter tags" ng-model="task.title" />
+		  </label>
+		</div>
+
+		<label class="item item-input item-stacked-label">
+	    <span class="input-label">Description</span>
+	    <textarea placeholder="Description" ng-model="task.description"></textarea>
+	  </label>
+
+		<div class="padding">
+      <button class="button button-block button-positive" ng-click="save(task);">Submit</button>
+    </div>
+		
+	</ion-content>
+</ion-view>

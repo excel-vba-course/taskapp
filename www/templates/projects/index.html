@@ -1,0 +1,11 @@
+<ion-view view-title="Projects">
+	<ion-content class="has-header">
+
+		<ul class="list">
+			<li ng-repeat="project in projects" class="item">
+				<a ui-sref="app.tasks({projectId: project.id})">{{project.id}} - {{project.name}}</a>
+			</li>
+		</ul>
+
+	</ion-content>
+</ion-view>
