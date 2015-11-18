@@ -4,3 +4,10 @@
 .tasks-table td {
 	padding: 5px;
 }
+
+.task-show-container {
+	padding: 8px;
+}
+.task-info {
+	padding: 5px;
+}

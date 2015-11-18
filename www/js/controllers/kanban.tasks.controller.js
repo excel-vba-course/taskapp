@@ -23,6 +23,23 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 	$http.post(api_endpoint + '?getAllTasks', request, createConfig()).success(function(request) {
 		$ionicLoading.hide();
     $scope.tasks = request.result;
+    angular.forEach($scope.tasks, function(task, i) {
+    	console.log($window.localStorage["categories"]);
+    	angular.forEach(JSON.parse($window.localStorage["categories"]), function(category, i) {
+    		if(category.id == task.category_id) {
+    			task.category_name = category.name
+    		}
+    	})
+    	angular.forEach(JSON.parse($window.localStorage["users"]), function(user, i) {
+    		if(user.id == task.owner_id) {
+    			if(user.name == null) {
+    				task.owner_name = user.username
+    			} else {
+    				task.owner_name = user.name
+    			}
+    		}
+    	})
+    })
   });
 
 }
@@ -46,8 +63,12 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		});
 		var request = JSON.stringify({"jsonrpc": "2.0","method": "getTask", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
 		$http.post(api_endpoint, request, createConfig()).success(function(request) {
-			$ionicLoading.hide();
       $scope.task = request.result;
+      var request = JSON.stringify({"jsonrpc": "2.0","method": "getAllComments", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
+      $http.post(api_endpoint, request, createConfig()).success(function(request) {
+      	$scope.task.comments = request.result;
+      	$ionicLoading.hide();
+      });
     });
 	} else {
 		$scope.task = {project_id: $stateParams.projectId}
@@ -78,7 +99,22 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 				}
 	    });	
 		}
-		
+	}
+
+	$scope.addComment = function() {
+		$ionicLoading.show({
+	    template: 'Loading...'
+	  });
+		var request = JSON.stringify({"jsonrpc": "2.0","method": "createComment", "id": 133280317, "params": {"task_id": $stateParams.taskId, "user_id": $scope.me.id, "content": $scope.newComment}});
+		$http.post(api_endpoint, request, createConfig()).success(function(request) {
+			$ionicLoading.hide();
+			console.log(request)
+      if(request.error) {
+				alert(request.error.message)
+			} else {
+				$scope.task.comments.push({username: $scope.me.username, comment: $scope.newComment})
+			}
+    });
 	}
 
 }

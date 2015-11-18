@@ -1,6 +1,7 @@
 <ion-view view-title="Sign In">
 	<ion-content class="has-header">
 
+
 		<div class="list">
 		  <label class="item item-input item-stacked-label">
 		    <span class="input-label">Username</span>
@@ -15,6 +16,18 @@
 		<div class="padding">
       <button class="button button-block button-positive" ng-click="signIn(session);">Sign In</button>
     </div>
+
+    <div class="card" ng-hide="!me">
+		  <div class="item item-text-wrap">
+		    Username = {{me.username}}
+		  </div>
+		</div>
+
+		<div class="card" ng-hide="!!me">
+			<div class="item item-text-wrap">
+				You are not signed in !
+			</div>
+		</div>
 		
 	</ion-content>
 </ion-view>

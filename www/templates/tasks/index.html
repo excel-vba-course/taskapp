@@ -1,14 +1,24 @@
 <ion-view view-title="Tasks">
 	<ion-content class="has-header">
 		
-		<div ui-view=""></div>
+		<div ui-view="" class="task-show-container"></div>
 		<hr />
 
 		<table class="tasks-table">
-			<tr ng-repeat="task in tasks" >
-				<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
-				<td><a ui-sref="app.tasks.task({taskId: task.id})">{{task.title}}</td>
-			</tr>
+			<thead>
+				<th></th>
+				<th>Name</th>
+				<th>Owner</th>
+				<th>Category</th>
+			</thead>
+			<tbody>
+				<tr ng-repeat="task in tasks">
+					<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
+					<td><a ui-sref="app.tasks.task({taskId: task.id})">{{task.title}}</a></td>
+					<td>{{task.owner_name}}</td>
+					<td>{{task.category_name}}</td>
+				</tr>
+			</tbody>
 		</table>
 
 		<a ui-sref="app.new-task({projectId: projectId})" class="button button-block button-positive">New Task</a>
