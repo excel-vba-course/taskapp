@@ -74,12 +74,16 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		$scope.task = {project_id: $stateParams.projectId}
 	}
 
+	$scope.categories = JSON.parse($window.localStorage["categories"])
+	$scope.users = JSON.parse($window.localStorage["users"])
+
+
 	$scope.save = function(task) {
 		$ionicLoading.show({
 	    template: 'Loading...'
 	  });
 		if(!!task.id) {
-			var request = JSON.stringify({"jsonrpc": "2.0","method": "updateTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "id": task.id}});
+			var request = JSON.stringify({"jsonrpc": "2.0","method": "updateTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "id": task.id, "score": task.score, "owner_id": task.owner_id, "category_id": task.category_id}});
 			$http.post(api_endpoint + '?updateTask', request, createConfig()).success(function(request) {
 				$ionicLoading.hide();
 				if(request.error) {
@@ -89,7 +93,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 				}
 	    });
 		} else {
-			var request = JSON.stringify({"jsonrpc": "2.0","method": "createTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description}});
+			var request = JSON.stringify({"jsonrpc": "2.0","method": "createTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "score": task.score, "owner_id": task.owner_id, "category_id": task.category_id}});
 			$http.post(api_endpoint + '?createTask', request, createConfig()).success(function(request) {
 				$ionicLoading.hide();
 	      if(request.error) {
