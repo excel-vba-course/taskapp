@@ -1,5 +1,5 @@
 <div style="background-color: {{task.color.background}}" class="task-info">
-	<h3>#{{task.id}} {{task.title}} <a ui-sref="app.edit-task({taskId: task.id})"><i class="ion-edit"></i></a></h3>
+	<h3><a ui-sref="app.edit-task({taskId: task.id})">#{{task.id}} {{task.title}} <i class="ion-edit"></i></a></h3>
 	<ul>
 		<li>Craeted at {{task.date_creation*1000 | date:'medium'}}</li>
 		<li>Last Modified on {{task.date_modification*1000 | date:'medium'}}</li>

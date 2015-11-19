@@ -17,14 +17,20 @@ var ApplicationController = function($ionicLoading, $scope, $ionicActionSheet, $
 		$scope.me = JSON.parse($window.localStorage["me"])	
 	}
 	
-	if($window.localStorage["users"] == null) {
+	$scope.sync = function() {
 		$http.post(api_endpoint, '{"jsonrpc": "2.0","method": "getAllUsers", "id": 133280317}', createConfig()).success(function(request) {
 			$window.localStorage["users"] = JSON.stringify(request.result);
 	  });
 	  $http.post(api_endpoint, '{"jsonrpc": "2.0","method": "getAllCategories", "id": 133280017, "params": {"project_id": 1}}', createConfig()).success(function(request) {
-	  	console.log(request)
 			$window.localStorage["categories"] = JSON.stringify(request.result);
 	  });
+	  $http.post(api_endpoint, '{"jsonrpc": "2.0","method": "getColumns", "id": 133280017, "params": [1]}', createConfig()).success(function(request) {
+			$window.localStorage["columns"] = JSON.stringify(request.result);
+	  });
+	}
+
+	if($window.localStorage["users"] == null) {
+		$scope.sync();
 	}
 	
 }

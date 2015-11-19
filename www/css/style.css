@@ -1,8 +1,13 @@
 /* Empty. Add your own CSS if you like */
 
+.tasks-table {
+	width: 100%;
+}
 
 .tasks-table td {
 	padding: 5px;
+	border-bottom: 1px solid #eee;
+	text-align: center;
 }
 
 .task-show-container {
@@ -10,4 +15,10 @@
 }
 .task-info {
 	padding: 5px;
+}
+ul {
+	margin-bottom: 10px;
+}
+li.button-calm {
+	margin-left: 4px;
 }

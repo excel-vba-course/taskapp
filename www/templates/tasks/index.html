@@ -4,19 +4,25 @@
 		<div ui-view="" class="task-show-container"></div>
 		<hr />
 
+		<ul class="">
+			<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeFilter(hour)">{{hour.name}}</li>
+		</ul>
+
 		<table class="tasks-table">
 			<thead>
 				<th></th>
 				<th>Name</th>
 				<th>Owner</th>
 				<th>Category</th>
+				<th>Created</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="task in tasks">
+				<tr ng-repeat="task in tasks | filter: greaterThan('date_creation', currentFilter)">
 					<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
 					<td><a ui-sref="app.tasks.task({taskId: task.id})">{{task.title}}</a></td>
 					<td>{{task.owner_name}}</td>
 					<td>{{task.category_name}}</td>
+					<td>{{task.date_creation*1000 | date:'medium'}}</td>
 				</tr>
 			</tbody>
 		</table>
