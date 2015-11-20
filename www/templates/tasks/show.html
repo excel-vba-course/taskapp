@@ -13,11 +13,17 @@
 <div ng-if="task.comments.length != 0">
 	<hr>
 	<h3>Comments</h3>
-	<ul>
-		<li ng-repeat="comment in task.comments">
-			<b>{{comment.username}}</b> - {{comment.comment}}
-		</li>
-	</ul>
+	<div class="list">
+	    <div class="item item-thumbnail-left" href="" ng-repeat="comment in task.comments" ng-class="!!currentFilter && (currentFilter < comment.date_creation*1000) ? 'highlight' : ''">
+	      <img src="img/user.png">
+	      <h2>
+	      	<b>{{comment.username}}</b> - 
+	      	<span ng-click="changeTime(comment, 'timeStamp')" am-time-ago="comment.date_creation*1000" ng-show="comment.timeDisplay != 'timeStamp'"></span>
+	      	<span ng-click="changeTime(comment, 'timeAgo')" ng-show="comment.timeDisplay == 'timeStamp'">{{comment.date_creation*1000 | date:'medium'}}</span>
+	      </h2> 
+	      <p>{{comment.comment}}</p>
+	    </div>
+	</div>
 </div>
 <br>
 <div class="list">

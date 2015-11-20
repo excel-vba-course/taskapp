@@ -19,11 +19,16 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
     template: 'Loading...'
   });
 
-	$scope.currentFilter = (Date.now() - 3600000*24*30*5);
+	$scope.currentFilter = null;
 
 	$scope.greaterThan = function(prop, val){
     return function(item) {
-      return parseInt(item[prop])*1000 > val;
+    	console.log(val)
+    	if(val == null) {
+    		return true;
+    	} else {
+    		return parseInt(item[prop])*1000 > val;	
+    	}  
     }
 	}
 
@@ -31,8 +36,11 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 		$scope.currentFilter = hour.difference;
 	}
 
+	$scope.clearFilter = function() {
+		$scope.currentFilter = null;
+	}
+
   $scope.hourFilters = [
-    {name: "All", difference: (Date.now() - 3600000*24*30*5)},
   	{name: "1 Hours", difference: (Date.now() - 3600000)},
   	{name: "2 Hours", difference: (Date.now() - 3600000*2)},
   	{name: "4 Hours", difference: (Date.now() - 3600000*4)},
@@ -134,13 +142,16 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		var request = JSON.stringify({"jsonrpc": "2.0","method": "createComment", "id": 133280317, "params": {"task_id": $stateParams.taskId, "user_id": $scope.me.id, "content": $scope.newComment}});
 		$http.post(api_endpoint, request, createConfig()).success(function(request) {
 			$ionicLoading.hide();
-			console.log(request)
       if(request.error) {
 				alert(request.error.message)
 			} else {
-				$scope.task.comments.push({username: $scope.me.username, comment: $scope.newComment})
+				$scope.task.comments.push({username: $scope.me.username, comment: $scope.newComment, date_creation: Date.now()/1000})
 			}
     });
+	}
+
+	$scope.changeTime = function(comment, timeDisplay) {
+		comment.timeDisplay = timeDisplay;
 	}
 
 }

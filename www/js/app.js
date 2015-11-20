@@ -9,7 +9,7 @@ api_endpoint = "http://localhost:8100/kanban/jsonrpc.php";
 
 
 angular.module('kanban.controllers', [])
-angular.module('kanban', ['ionic', 'kanban.controllers', 'base64'])
+angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMoment'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

@@ -5,6 +5,7 @@
 		<hr />
 
 		<ul class="">
+			<li class="button button-small button-calm" ng-click="clearFilter()">All</li>
 			<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeFilter(hour)">{{hour.name}}</li>
 		</ul>
 
