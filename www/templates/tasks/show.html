@@ -1,40 +1,43 @@
-<div style="background-color: {{task.color.background}}" class="task-info">
-	<h3><a ui-sref="app.edit-task({taskId: task.id})">#{{task.id}} {{task.title}} <i class="ion-edit"></i></a></h3>
-	<ul>
-		<li>Craeted at {{task.date_creation*1000 | date:'medium'}}</li>
-		<li>Last Modified on {{task.date_modification*1000 | date:'medium'}}</li>
-		<li>Started on {{task.date_started*1000 | date:'medium'}}</li>
-		<li><b>Must be done before {{task.date_due*1000 | date:'medium'}}</b></li>
-		<li>Started on {{task.date_started*1000 | date:'medium'}}</li>
-	</ul>
-</div>
-<h5>Description</h5>
-<p>{{task.description}}</p>
-<div ng-if="task.comments.length != 0">
-	<hr>
-	<h3>Comments</h3>
+<div ng-show="action == 'show'">
+	<div style="background-color: {{task.color.background}}" class="task-info">
+		<h3><a href="" ng-click="changeAction('edit')">#{{task.id}} {{task.title}} <i class="ion-edit"></i></a></h3>
+		<ul>
+			<li>Craeted at {{task.date_creation*1000 | date:'medium'}}</li>
+			<li>Last Modified on {{task.date_modification*1000 | date:'medium'}}</li>
+			<li>Started on {{task.date_started*1000 | date:'medium'}}</li>
+			<li><b>Must be done before {{task.date_due*1000 | date:'medium'}}</b></li>
+			<li>Started on {{task.date_started*1000 | date:'medium'}}</li>
+		</ul>
+	</div>
+	<h5>Description</h5>
+	<p>{{task.description}}</p>
+	<div ng-if="task.comments.length != 0">
+		<hr>
+		<h3>Comments</h3>
+		<div class="list">
+		    <div class="item item-thumbnail-left" href="" ng-repeat="comment in task.comments" ng-class="!!currentFilter && (currentFilter < comment.date_creation*1000) ? 'highlight' : ''">
+		      <img src="img/user.png">
+		      <h2>
+		      	<b>{{comment.username}}</b> - 
+		      	<span ng-click="changeTime(comment, 'timeStamp')" am-time-ago="comment.date_creation*1000" ng-show="comment.timeDisplay != 'timeStamp'"></span>
+		      	<span ng-click="changeTime(comment, 'timeAgo')" ng-show="comment.timeDisplay == 'timeStamp'">{{comment.date_creation*1000 | date:'medium'}}</span>
+		      </h2> 
+		      <p>{{comment.comment}}</p>
+		    </div>
+		</div>
+	</div>
+	<br>
 	<div class="list">
-	    <div class="item item-thumbnail-left" href="" ng-repeat="comment in task.comments" ng-class="!!currentFilter && (currentFilter < comment.date_creation*1000) ? 'highlight' : ''">
-	      <img src="img/user.png">
-	      <h2>
-	      	<b>{{comment.username}}</b> - 
-	      	<span ng-click="changeTime(comment, 'timeStamp')" am-time-ago="comment.date_creation*1000" ng-show="comment.timeDisplay != 'timeStamp'"></span>
-	      	<span ng-click="changeTime(comment, 'timeAgo')" ng-show="comment.timeDisplay == 'timeStamp'">{{comment.date_creation*1000 | date:'medium'}}</span>
-	      </h2> 
-	      <p>{{comment.comment}}</p>
-	    </div>
+
+	  <div class="item item-input-inset">
+	    <label class="item-input-wrapper">
+	      <input type="text" placeholder="Add Commnet" ng-model="newComment">
+	    </label>
+	    <button class="button button-small" ng-click="addComment()">
+	      Submit
+	    </button>
+	  </div>
+
 	</div>
 </div>
-<br>
-<div class="list">
-
-  <div class="item item-input-inset">
-    <label class="item-input-wrapper">
-      <input type="text" placeholder="Add Commnet" ng-model="newComment">
-    </label>
-    <button class="button button-small" ng-click="addComment()">
-      Submit
-    </button>
-  </div>
-
-</div>
+<div ng-include=" 'templates/tasks/form.html' " ng-show="action == 'edit'"></div>

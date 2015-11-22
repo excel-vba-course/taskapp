@@ -18,9 +18,9 @@
 				<th>Created</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="task in tasks | filter: greaterThan('date_creation', currentFilter)">
+				<tr ng-repeat="task in tasks | filter: greaterThan('date_creation', currentFilter)" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
 					<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
-					<td><a ui-sref="app.tasks.task({taskId: task.id})">{{task.title}}</a></td>
+					<td><a href="">{{task.title}}</a></td>
 					<td>{{task.owner_name}}</td>
 					<td>{{task.category_name}}</td>
 					<td>{{task.date_creation*1000 | date:'medium'}}</td>
@@ -28,7 +28,7 @@
 			</tbody>
 		</table>
 
-		<a ui-sref="app.new-task({projectId: projectId})" class="button button-block button-positive">New Task</a>
+		<a ui-sref="app.tasks.new({projectId: projectId})" class="button button-block button-positive">New Task</a>
 
 	</ion-content>
 </ion-view>

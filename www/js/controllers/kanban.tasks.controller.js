@@ -1,6 +1,6 @@
 var taskModule = angular.module('kanban.controllers');
 
-var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams) {
+var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state) {
 
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
@@ -23,7 +23,6 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 
 	$scope.greaterThan = function(prop, val){
     return function(item) {
-    	console.log(val)
     	if(val == null) {
     		return true;
     	} else {
@@ -38,6 +37,10 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 
 	$scope.clearFilter = function() {
 		$scope.currentFilter = null;
+	}
+
+	$scope.redirect = function(task) {
+		$state.go('app.tasks.task', {taskId: task.id});
 	}
 
   $scope.hourFilters = [
@@ -74,7 +77,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 
 }
 
-var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams) {
+var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state) {
 
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
@@ -87,22 +90,39 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
     return config;
 	};
 
-	if(!!$stateParams.taskId) {
-		$ionicLoading.show({
-		  template: 'Loading...'
-		});
-		var request = JSON.stringify({"jsonrpc": "2.0","method": "getTask", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
-		$http.post(api_endpoint, request, createConfig()).success(function(request) {
-      $scope.task = request.result;
-      var request = JSON.stringify({"jsonrpc": "2.0","method": "getAllComments", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
-      $http.post(api_endpoint, request, createConfig()).success(function(request) {
-      	$scope.task.comments = request.result;
-      	$ionicLoading.hide();
-      });
-    });
-	} else {
-		$scope.task = {project_id: $stateParams.projectId}
+	$scope.changeAction = function(actionName) {
+		$scope.action = actionName;
 	}
+
+	var loadTask = function() {
+		if(!!$stateParams.taskId) {
+			$ionicLoading.show({
+			  template: 'Loading...'
+			});
+			var request = JSON.stringify({"jsonrpc": "2.0","method": "getTask", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
+			$http.post(api_endpoint, request, createConfig()).success(function(request) {
+	      $scope.task = request.result;
+	      var request = JSON.stringify({"jsonrpc": "2.0","method": "getAllComments", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
+	      $http.post(api_endpoint, request, createConfig()).success(function(request) {
+	      	$scope.task.comments = request.result;
+	      	$ionicLoading.hide();
+	      });
+	      angular.forEach($scope.tasks, function(task, i) {
+	      	if(parseInt(task.id) == parseInt($stateParams.taskId)) {
+	      		$scope.tasks[i] = task;
+	      		$scope.tasks[i].highlight = true;
+	      	} else {
+	      		$scope.tasks[i].highlight = false;
+	      	}
+	      })
+	    });
+		} else {
+			$scope.task = {project_id: $stateParams.projectId}
+		}
+	}
+	
+	loadTask();
+	$scope.action = "show"
 
 	$scope.categories = JSON.parse($window.localStorage["categories"]);
 	$scope.users = JSON.parse($window.localStorage["users"]);
@@ -119,7 +139,8 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 				if(request.error) {
 					alert(request.error.message)
 				} else {
-					alert("Task Updated")
+					$scope.changeAction('show');
+					loadTask();
 				}
 	    });
 		} else {
@@ -129,7 +150,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	      if(request.error) {
 					alert(request.error.message)
 				} else {
-					alert("Task Created")
+					$state.go('app.tasks.task', {taskId: request.result});
 				}
 	    });	
 		}
@@ -146,6 +167,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 				alert(request.error.message)
 			} else {
 				$scope.task.comments.push({username: $scope.me.username, comment: $scope.newComment, date_creation: Date.now()/1000})
+				$scope.newComment = "";
 			}
     });
 	}
@@ -156,5 +178,5 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 
 }
 
-taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', KanboardTasksController]);
-taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', KanboardTaskController]);
+taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', KanboardTasksController]);
+taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', KanboardTaskController]);
