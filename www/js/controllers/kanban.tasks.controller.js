@@ -2,6 +2,7 @@ var taskModule = angular.module('kanban.controllers');
 
 var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state, $interpolate) {
 
+  $scope.tasks = [];
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
     var auth = $base64.encode(session.username + ":" + session.password);
@@ -199,6 +200,16 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	$scope.changeTime = function(comment, timeDisplay) {
 		comment.timeDisplay = timeDisplay;
 	}
+
+	$scope.$watch(function(scope) { return scope.currentFilter.name },
+      function(newValue, oldValue) {
+          if(newValue != oldValue){
+          	if($scope.filteredTasks.length != 0)
+          		$state.go('app.tasks.task', {taskId: $scope.filteredTasks[0].id});
+          	else
+          		$state.go('app.tasks');
+          }
+      });
 
 }
 
