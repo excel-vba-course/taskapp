@@ -115,6 +115,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 			$ionicLoading.show({
 			  template: 'Loading...'
 			});
+			var taskFetched = false;
 			var request = JSON.stringify({"jsonrpc": "2.0","method": "getTask", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
 			$http.post(api_endpoint, request, createConfig()).success(function(request) {
 	      $scope.task = request.result;
@@ -128,10 +129,15 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	      		$scope.tasks.splice(i, 1, $scope.task);
 	      		$scope.fetchTaskAssets($scope.task)
 	      		$scope.tasks[i].highlight = true;
+	      		taskFetched = true
 	      	} else {
 	      		$scope.tasks[i].highlight = false;
 	      	}
 	      })
+	      if(!taskFetched) {
+	      	$scope.tasks.push($scope.task)
+	      	$scope.fetchTaskAssets($scope.task)
+	      }
 	    });
 		} else {
 			$scope.task = {project_id: $stateParams.projectId}
