@@ -1,6 +1,6 @@
 var taskModule = angular.module('kanban.controllers');
 
-var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state) {
+var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state, $interpolate) {
 
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
@@ -26,13 +26,14 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
     	if(val == null) {
     		return true;
     	} else {
-    		return parseInt(item[prop])*1000 > val;	
+    		return parseInt(item[prop])*1000 > val;
     	}  
     }
 	}
 
 	$scope.changeFilter = function(hour) {
 		$scope.currentFilter = hour.difference;
+		console.log($scope.$eval($interpolate( "task in tasks | filter: greaterThan('date_creation', currentFilter)" )))
 	}
 
 	$scope.clearFilter = function() {
@@ -51,27 +52,31 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
   	{name: "1 Day", difference: (Date.now() - 3600000*24)},
   	{name: "1 Week", difference: (Date.now() - 3600000*24*7)},
   	{name: "1 Month", difference: (Date.now() - 3600000*24*30)}
-  ]
+  ]  
+
+  $scope.fetchTaskAssets = function(task) {
+  	angular.forEach(JSON.parse($window.localStorage["categories"]), function(category, i) {
+  		if(category.id == task.category_id) {
+  			task.category_name = category.name
+  		}
+  	})
+  	angular.forEach(JSON.parse($window.localStorage["users"]), function(user, i) {
+  		if(user.id == task.owner_id) {
+  			if(user.name == null) {
+  				task.owner_name = user.username
+  			} else {
+  				task.owner_name = user.name
+  			}
+  		}
+  	})
+  }
 
 	var request = '{"jsonrpc": "2.0","method": "getAllTasks", "id": 133280317, "params": {"project_id": '+$stateParams.projectId+', "status_id": 1}}';
 	$http.post(api_endpoint + '?getAllTasks', request, createConfig()).success(function(request) {
 		$ionicLoading.hide();
     $scope.tasks = request.result;
     angular.forEach($scope.tasks, function(task, i) {
-    	angular.forEach(JSON.parse($window.localStorage["categories"]), function(category, i) {
-    		if(category.id == task.category_id) {
-    			task.category_name = category.name
-    		}
-    	})
-    	angular.forEach(JSON.parse($window.localStorage["users"]), function(user, i) {
-    		if(user.id == task.owner_id) {
-    			if(user.name == null) {
-    				task.owner_name = user.username
-    			} else {
-    				task.owner_name = user.name
-    			}
-    		}
-    	})
+    	$scope.fetchTaskAssets(task);
     })
   });
 
@@ -109,7 +114,8 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	      });
 	      angular.forEach($scope.tasks, function(task, i) {
 	      	if(parseInt(task.id) == parseInt($stateParams.taskId)) {
-	      		$scope.tasks[i] = task;
+	      		$scope.tasks.splice(i, 1, $scope.task);
+	      		$scope.fetchTaskAssets($scope.task)
 	      		$scope.tasks[i].highlight = true;
 	      	} else {
 	      		$scope.tasks[i].highlight = false;
@@ -178,5 +184,5 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 
 }
 
-taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', KanboardTasksController]);
+taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$interpolate', KanboardTasksController]);
 taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', KanboardTaskController]);

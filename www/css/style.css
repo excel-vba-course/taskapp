@@ -24,4 +24,14 @@ li.button-calm {
 }
 .highlight{
 	background-color: #D8F7FF;
-}    
+}
+
+.item-thumbnail-left > img:first-child {
+	max-width: 40px;
+  max-height: 40px;
+}
+
+.item-thumbnail-left {
+	min-height: 60px;
+	padding-left: 65px;
+}

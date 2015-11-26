@@ -73,19 +73,21 @@ angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMomen
     parent: 'app.tasks'
   })
 
-  .state('app.tasks.edit', {
-    url: '/:taskId/edit',
-    templateUrl: 'templates/tasks/form.html',
+  .state('app.tasks.new', {
+    url: '/new',
+    templateUrl: 'templates/tasks/new.html',
     controller: "KanboardTaskController",
     parent: 'app.tasks'
   })
 
-  .state('app.tasks.new', {
-    url: '/new',
-    templateUrl: 'templates/tasks/form.html',
+  .state('app.tasks.edit', {
+    url: '/:taskId/edit',
+    templateUrl: 'templates/tasks/edit.html',
     controller: "KanboardTaskController",
     parent: 'app.tasks'
   })
+
+  
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/sign-in');
 });
