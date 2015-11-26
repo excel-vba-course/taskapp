@@ -1,9 +1,9 @@
-<div ng-include=" 'templates/tasks/form.html' " ng-show="action == 'edit'"></div>
+<div ng-include=" 'templates/tasks/form.html' "></div>
 <div class="row">
   <div class="col">
   	<button class="button button-block button-positive" ng-click="save(task);">Submit</button>
 	</div>
   <div class="col">
-  	<a ui-sref="app.tasks({projectId: project.id})" class="button button-block button-energized">Cancel</a>
+  	<a ui-sref="app.tasks({projectId: projectId})" class="button button-block button-energized">Cancel</a>
   </div>
 </div>

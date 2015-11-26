@@ -4,31 +4,44 @@
 		<div ui-view="" class="task-show-container"></div>
 		<hr />
 
-		<ul class="">
-			<li class="button button-small button-calm" ng-click="clearFilter()">All</li>
-			<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeFilter(hour)">{{hour.name}}</li>
-		</ul>
+		<div class="row">
+		  <div class="col col-75">
+		  	<ul class="">
+					<li class="button button-small button-calm" ng-click="clearFilter()" ng-class="(null == currentFilter) ? 'active' : ''">All</li>
+					<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeFilter(hour)" ng-class="(hour.name == currentFilter.name) ? 'active' : ''">{{hour.name}}</li>
+				</ul>
 
+		  </div>
+		  <div class="col">
+		  	<a ui-sref="app.tasks.new({projectId: projectId})" class="button button-small button-balanced pull-right">+ New Task</a>
+		  </div>
+		</div>
+
+		
 		<table class="tasks-table">
 			<thead>
 				<th></th>
 				<th>Name</th>
 				<th>Owner</th>
 				<th>Category</th>
+				<th>Column</th>
+				<th>Swimlane</th>
 				<th>Created</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="task in tasks | filter: greaterThan('date_creation', currentFilter)" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
+				<tr ng-repeat="task in tasks | filter: greaterThan('date_creation', currentFilter.difference)" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
 					<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
 					<td><a href="">{{task.title}}</a></td>
 					<td>{{task.owner_name}}</td>
 					<td>{{task.category_name}}</td>
+					<td>{{task.column_name}}</td>
+					<td>{{task.swimlane_name}}</td>
 					<td>{{task.date_creation*1000 | date:'medium'}}</td>
 				</tr>
 			</tbody>
 		</table>
 
-		<a ui-sref="app.tasks.new({projectId: projectId})" class="button button-block button-positive">New Task</a>
+		
 
 	</ion-content>
 </ion-view>

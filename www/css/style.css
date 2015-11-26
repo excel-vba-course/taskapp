@@ -35,3 +35,16 @@ li.button-calm {
 	min-height: 60px;
 	padding-left: 65px;
 }
+
+.comments {
+	height: 400px;
+	overflow: scroll;
+}
+
+.item p {
+  white-space: inherit;
+}
+
+.pull-right {
+	float: right;
+}

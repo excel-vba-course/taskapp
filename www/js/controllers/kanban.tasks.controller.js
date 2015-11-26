@@ -19,7 +19,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
     template: 'Loading...'
   });
 
-	$scope.currentFilter = null;
+	$scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null);
 
 	$scope.greaterThan = function(prop, val){
     return function(item) {
@@ -32,12 +32,13 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 	}
 
 	$scope.changeFilter = function(hour) {
-		$scope.currentFilter = hour.difference;
-		console.log($scope.$eval($interpolate( "task in tasks | filter: greaterThan('date_creation', currentFilter)" )))
+		$scope.currentFilter = hour;
+		$window.localStorage["currentFilter"] = JSON.stringify(hour);
 	}
 
 	$scope.clearFilter = function() {
 		$scope.currentFilter = null;
+		$window.localStorage["currentFilter"] = null;
 	}
 
 	$scope.redirect = function(task) {
@@ -69,6 +70,16 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
   			}
   		}
   	})
+  	angular.forEach(JSON.parse($window.localStorage["columns"]), function(column, i) {
+  		if(column.id == task.column_id) {
+  			task.column_name = column.title
+  		}
+  	})
+  	angular.forEach(JSON.parse($window.localStorage["swimlanes"] || null), function(swimlane, i) {
+  		if(swimlane.id == task.swimlane_id) {
+  			task.swimlane_name = swimlane.name
+  		}
+  	});
   }
 
 	var request = '{"jsonrpc": "2.0","method": "getAllTasks", "id": 133280317, "params": {"project_id": '+$stateParams.projectId+', "status_id": 1}}';
@@ -133,13 +144,14 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	$scope.categories = JSON.parse($window.localStorage["categories"]);
 	$scope.users = JSON.parse($window.localStorage["users"]);
 	$scope.columns = JSON.parse($window.localStorage["columns"]);
+	$scope.swimlanes = JSON.parse($window.localStorage["swimlanes"]);
 
 	$scope.save = function(task) {
 		$ionicLoading.show({
 	    template: 'Loading...'
 	  });
 		if(!!task.id) {
-			var request = JSON.stringify({"jsonrpc": "2.0","method": "updateTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "id": task.id, "score": task.score, "owner_id": task.owner_id, "category_id": task.category_id, "column_id": task.column_id}});
+			var request = JSON.stringify({"jsonrpc": "2.0","method": "updateTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "id": task.id, "score": task.score, "owner_id": task.owner_id, "category_id": task.category_id, "column_id": task.column_id, "swimlane_id": task.swimlane_id}});
 			$http.post(api_endpoint + '?updateTask', request, createConfig()).success(function(request) {
 				$ionicLoading.hide();
 				if(request.error) {
@@ -150,7 +162,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 				}
 	    });
 		} else {
-			var request = JSON.stringify({"jsonrpc": "2.0","method": "createTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "score": task.score, "owner_id": task.owner_id, "category_id": task.category_id, "column_id": task.column_id}});
+			var request = JSON.stringify({"jsonrpc": "2.0","method": "createTask", "id": 133280317, "params": {"project_id": task.project_id, "title": task.title, "description": task.description, "score": task.score, "owner_id": task.owner_id, "category_id": task.category_id, "column_id": task.column_id, "swimlane_id": task.swimlane_id}});
 			$http.post(api_endpoint + '?createTask', request, createConfig()).success(function(request) {
 				$ionicLoading.hide();
 	      if(request.error) {
