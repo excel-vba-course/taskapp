@@ -29,7 +29,7 @@
 				<th>Created</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="task in tasks | filter: greaterThan('date_creation', currentFilter.difference)" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
+				<tr ng-repeat="task in filteredTasks = (tasks | filter: greaterThan('date_creation', currentFilter.difference))" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
 					<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
 					<td><a href="">{{task.title}}</a></td>
 					<td>{{task.owner_name}}</td>
