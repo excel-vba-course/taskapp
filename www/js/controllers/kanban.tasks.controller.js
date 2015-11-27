@@ -14,6 +14,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
     return config;
 	};
 
+	$scope.mainContainerHeight = "700";
 	$scope.projectId = $stateParams.projectId;
 
 	$ionicLoading.show({
@@ -107,6 +108,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
     return config;
 	};
 
+	$scope.mainContainerHeight = "350";
 	$scope.changeAction = function(actionName) {
 		$scope.action = actionName;
 	}
@@ -181,17 +183,17 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		}
 	}
 
-	$scope.addComment = function() {
+	$scope.addComment = function(newComment) {
 		$ionicLoading.show({
 	    template: 'Loading...'
 	  });
-		var request = JSON.stringify({"jsonrpc": "2.0","method": "createComment", "id": 133280317, "params": {"task_id": $stateParams.taskId, "user_id": $scope.me.id, "content": $scope.newComment}});
+		var request = JSON.stringify({"jsonrpc": "2.0", "method": "createComment", "id": 133280317, "params": {"task_id": $stateParams.taskId, "user_id": $scope.me.id, "content": newComment}});
 		$http.post(api_endpoint, request, createConfig()).success(function(request) {
 			$ionicLoading.hide();
       if(request.error) {
 				alert(request.error.message)
 			} else {
-				$scope.task.comments.push({username: $scope.me.username, comment: $scope.newComment, date_creation: Date.now()/1000})
+				$scope.task.comments.push({username: $scope.me.username, comment: newComment, date_creation: Date.now()/1000})
 				$scope.newComment = "";
 			}
     });
@@ -201,15 +203,22 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		comment.timeDisplay = timeDisplay;
 	}
 
-	$scope.$watch(function(scope) { return scope.currentFilter.name },
-      function(newValue, oldValue) {
-          if(newValue != oldValue){
-          	if($scope.filteredTasks.length != 0)
-          		$state.go('app.tasks.task', {taskId: $scope.filteredTasks[0].id});
-          	else
-          		$state.go('app.tasks');
-          }
-      });
+	// $scope.$watch(function(scope) { return scope.currentFilter && scope.currentFilter.name }, function(newValue, oldValue) {
+ //    if(newValue != oldValue) {
+ //    	console.log($scope)
+ //    	if($scope.$$nextSibling == undefined) {
+ //    		var filteredTasks = $scope.$$prevSibling.filteredTasks;
+ //    	} else {
+ //    		var filteredTasks = $scope.$$nextSibling.filteredTasks;
+ //    	}
+ //    	if(filteredTasks.indexOf($scope.task) == -1) {
+	//     	if(filteredTasks.length != 0)
+	//     		$state.go('app.tasks.task', {taskId: filteredTasks[0].id});
+	//     	else
+	//     		$state.go('app.tasks');
+	//     }
+ //    }
+ //  });
 
 }
 

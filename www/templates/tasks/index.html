@@ -3,7 +3,6 @@
 		
 		<div ui-view="" class="task-show-container"></div>
 		<hr />
-
 		<div class="row">
 		  <div class="col col-75">
 		  	<ul class="">
@@ -16,33 +15,33 @@
 		  	<a ui-sref="app.tasks.new({projectId: projectId})" class="button button-small button-balanced pull-right">+ New Task</a>
 		  </div>
 		</div>
-
-		
-		<table class="tasks-table">
-			<thead>
-				<th></th>
-				<th>Name</th>
-				<th>Owner</th>
-				<th>Category</th>
-				<th>Column</th>
-				<th>Swimlane</th>
-				<th>Created</th>
-			</thead>
-			<tbody>
-				<tr ng-repeat="task in filteredTasks = (tasks | filter: greaterThan('date_creation', currentFilter.difference))" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
-					<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
-					<td><a href="">{{task.title}}</a></td>
-					<td>{{task.owner_name}}</td>
-					<td>{{task.category_name}}</td>
-					<td>{{task.column_name}}</td>
-					<td>{{task.swimlane_name}}</td>
-					<td>{{task.date_creation*1000 | date:'medium'}}</td>
-				</tr>
-				<tr ng-if="filteredTasks.length == 0">
-					<td colspan="7">No data found</td>
-				</tr>
-			</tbody>
-		</table>
+		<ion-scroll scrollbar-y="false" direction="y" style="height: 255px;">
+			<table class="tasks-table">
+				<thead>
+					<th></th>
+					<th>Name</th>
+					<th>Owner</th>
+					<th>Category</th>
+					<th>Column</th>
+					<th>Swimlane</th>
+					<th>Created</th>
+				</thead>
+				<tbody>
+					<tr ng-repeat="task in filteredTasks = (tasks | filter: greaterThan('date_creation', currentFilter.difference))" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
+						<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
+						<td><a href="">{{task.title}}</a></td>
+						<td>{{task.owner_name}}</td>
+						<td>{{task.category_name}}</td>
+						<td>{{task.column_name}}</td>
+						<td>{{task.swimlane_name}}</td>
+						<td>{{task.date_creation*1000 | date:'medium'}}</td>
+					</tr>
+					<tr ng-if="filteredTasks.length == 0">
+						<td colspan="7">No data found</td>
+					</tr>
+				</tbody>
+			</table>
+		</ion-scroll>
 
 		
 
