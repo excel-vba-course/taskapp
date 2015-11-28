@@ -1,5 +1,5 @@
 var taskModule = angular.module('kanban.controllers');
-taskModule.filter("inbetween", function() {
+taskModule.filter("inBetween", function() {
   return function(items, from, to, property) {
         var arrayToReturn = [];        
         for (var i=0; i<items.length; i++){

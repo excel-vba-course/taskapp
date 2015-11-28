@@ -207,18 +207,18 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 
 	$scope.changeTime = function(comment, timeDisplay) {
 		comment.timeDisplay = timeDisplay;
-	}
+	};
 
-  $scope.$watch(function(scope) { return scope.currentFilter && scope.currentFilter.name }, function(newValue, oldValue) {
-		//console.log($filter('greaterThan')($scope.tasks, 'date_creation', $scope.currentFilter.difference));
-    // if(newValue != oldValue) {
-    // 	if($scope.filteredTasks.indexOf($scope.task) == -1) {
-	   //  	if($scope.filteredTasks.length != 0)
-	   //  		$state.go('app.tasks.task', {taskId: $scope.filteredTasks[0].id});
-	   //  	else
-	   //  		$state.go('app.tasks');
-	   //  }
-    // }
+  $scope.$watch(function(scope) { return scope.currentFilter.name }, function(newValue, oldValue) {
+		var currentTaskList = $filter('inBetween')($scope.tasks, $scope.currentFilter.difference, $scope.todayInSeconds,'date_creation');
+		if(newValue != oldValue) {
+    	if(currentTaskList.indexOf($scope.task) == -1) {
+	    	if(currentTaskList.length != 0)
+	    		$state.go('app.tasks.task', {taskId: currentTaskList[0].id});
+	    	else
+	    		$state.go('app.tasks');
+	    }
+    }
   });
 
 }
