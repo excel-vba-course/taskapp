@@ -1,20 +1,23 @@
-<ion-view view-title="Sign In">
+<ion-view view-title="Sign In" >
 	<ion-content class="has-header">
-
-
-		<div class="list">
-		  <label class="item item-input item-stacked-label">
-		    <span class="input-label">Username</span>
-		    <input type="text" placeholder="Username" ng-model="session.username" />
-		  </label>
-		  <label class="item item-input item-stacked-label">
-		    <span class="input-label">Password</span>
-		    <input type="password" placeholder="Password" ng-model="session.password" />
-		  </label>
+		<div ng-hide="!me">
+			<button class="button button-block button-positive" ng-click="logout();">Logout</button>
 		</div>
+		<div ng-hide="!!me">
+			<div class="list">
+			  <label class="item item-input item-stacked-label">
+			    <span class="input-label">Username</span>
+			    <input type="text" placeholder="Username" ng-model="session.username" />
+			  </label>
+			  <label class="item item-input item-stacked-label">
+			    <span class="input-label">Password</span>
+			    <input type="password" placeholder="Password" ng-model="session.password" />
+			  </label>
+			</div>
 
-		<div class="padding">
-      <button class="button button-block button-positive" ng-click="signIn(session);">Sign In</button>
+			<div class="padding">
+	      <button class="button button-block button-positive" ng-click="signIn(session);">Sign In</button>
+	    </div>
     </div>
 
     <div class="card" ng-hide="!me">

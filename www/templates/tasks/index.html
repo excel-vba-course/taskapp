@@ -1,8 +1,10 @@
 <ion-view view-title="Tasks">
 	<ion-content class="has-header">
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 		
 		<div ui-view="" class="task-show-container"></div>
 		<hr />
+
 		<div class="row">
 		  <div class="col col-75">
 		  	<ul class="">

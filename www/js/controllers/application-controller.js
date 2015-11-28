@@ -14,7 +14,7 @@ var ApplicationController = function($ionicLoading, $scope, $ionicActionSheet, $
 	};
 
 	if($window.localStorage["me"]) {
-		$scope.me = JSON.parse($window.localStorage["me"])	
+		$scope.me = JSON.parse($window.localStorage["me"])
 	}
 
 	$scope.goBack = function() {
