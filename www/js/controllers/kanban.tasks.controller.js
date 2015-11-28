@@ -21,8 +21,6 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
     template: 'Loading...'
   });
 
-	$scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null);
-
 	$scope.greaterThan = function(prop, val){
     return function(item) {
     	if(val == null) {
@@ -47,15 +45,23 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 		$state.go('app.tasks.task', {taskId: task.id});
 	}
 
+
+	$scope.todayInSeconds = Date.now()/1000;
   $scope.hourFilters = [
-  	{name: "1 Hours", difference: (Date.now() - 3600000)},
-  	{name: "2 Hours", difference: (Date.now() - 3600000*2)},
-  	{name: "4 Hours", difference: (Date.now() - 3600000*4)},
-  	{name: "8 Hours", difference: (Date.now() - 3600000*8)},
-  	{name: "1 Day", difference: (Date.now() - 3600000*24)},
-  	{name: "1 Week", difference: (Date.now() - 3600000*24*7)},
-  	{name: "1 Month", difference: (Date.now() - 3600000*24*30)}
-  ]  
+    {name: "All", difference: 0},
+  	{name: "1 Hours", difference: (Date.now() - 3600000)/1000},
+  	{name: "2 Hours", difference: (Date.now() - 3600000*2)/1000},
+  	{name: "4 Hours", difference: (Date.now() - 3600000*4)/1000},
+  	{name: "8 Hours", difference: (Date.now() - 3600000*8)/1000},
+  	{name: "1 Day", difference: (Date.now() - 3600000*24)/1000},
+  	{name: "1 Week", difference: (Date.now() - 3600000*24*7)/1000},
+  	{name: "1 Month", difference: (Date.now() - 3600000*24*30)/1000}
+  ];
+  
+  $scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null);
+  if(!$scope.currentFilter)  // if not stored in local storage select All as default
+    $scope.currentFilter = $scope.hourFilters[0];
+
 
   $scope.fetchTaskAssets = function(task) {
   	angular.forEach(JSON.parse($window.localStorage["categories"]), function(category, i) {
@@ -95,7 +101,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 
 }
 
-var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state) {
+var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state, $filter) {
 
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
@@ -203,24 +209,34 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		comment.timeDisplay = timeDisplay;
 	}
 
-	// $scope.$watch(function(scope) { return scope.currentFilter && scope.currentFilter.name }, function(newValue, oldValue) {
- //    if(newValue != oldValue) {
- //    	console.log($scope)
- //    	if($scope.$$nextSibling == undefined) {
- //    		var filteredTasks = $scope.$$prevSibling.filteredTasks;
- //    	} else {
- //    		var filteredTasks = $scope.$$nextSibling.filteredTasks;
- //    	}
- //    	if(filteredTasks.indexOf($scope.task) == -1) {
-	//     	if(filteredTasks.length != 0)
-	//     		$state.go('app.tasks.task', {taskId: filteredTasks[0].id});
-	//     	else
-	//     		$state.go('app.tasks');
-	//     }
- //    }
- //  });
+  $scope.$watch(function(scope) { return scope.currentFilter && scope.currentFilter.name }, function(newValue, oldValue) {
+		//console.log($filter('greaterThan')($scope.tasks, 'date_creation', $scope.currentFilter.difference));
+    // if(newValue != oldValue) {
+    // 	if($scope.filteredTasks.indexOf($scope.task) == -1) {
+	   //  	if($scope.filteredTasks.length != 0)
+	   //  		$state.go('app.tasks.task', {taskId: $scope.filteredTasks[0].id});
+	   //  	else
+	   //  		$state.go('app.tasks');
+	   //  }
+    // }
+  });
 
 }
 
 taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$interpolate', KanboardTasksController]);
-taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', KanboardTaskController]);
+taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$filter', KanboardTaskController]);
+
+taskModule.filter("inbetween", function() {
+  return function(items, from, to, property) {
+        var arrayToReturn = [];        
+        for (var i=0; i<items.length; i++){
+            var fieldValue = parseInt(items[i][property]);
+            //console.log("fieldValue : "+ fieldValue+ " from: "+ from + " to: "+ to);
+            if (fieldValue > from && fieldValue < to)  {
+                arrayToReturn.push(items[i]);
+            }
+        }
+        
+        return arrayToReturn;
+  };
+});

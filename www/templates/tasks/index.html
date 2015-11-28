@@ -6,7 +6,6 @@
 		<div class="row">
 		  <div class="col col-75">
 		  	<ul class="">
-					<li class="button button-small button-calm" ng-click="clearFilter()" ng-class="(null == currentFilter) ? 'active' : ''">All</li>
 					<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeFilter(hour)" ng-class="(hour.name == currentFilter.name) ? 'active' : ''">{{hour.name}}</li>
 				</ul>
 
@@ -26,8 +25,9 @@
 					<th>Swimlane</th>
 					<th>Created</th>
 				</thead>
+
 				<tbody>
-					<tr ng-repeat="task in filteredTasks = (tasks | filter: greaterThan('date_creation', currentFilter.difference))" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
+					<tr ng-repeat="task in tasks | inbetween:currentFilter.difference:todayInSeconds:'date_creation'" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
 						<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
 						<td><a href="">{{task.title}}</a></td>
 						<td>{{task.owner_name}}</td>
