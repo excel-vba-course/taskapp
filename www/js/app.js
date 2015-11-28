@@ -4,12 +4,13 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-// api_endpoint = "http://localhost:8100/kanban/jsonrpc.php";
-api_endpoint = "http://52.32.151.49/jsonrpc.php";
+api_endpoint = "http://localhost:8100/kanban/jsonrpc.php";
+// api_endpoint = "http://52.32.151.49/jsonrpc.php";
 
 
 angular.module('kanban.controllers', [])
-angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMoment'])
+angular.module('kanban.directives',[]);
+angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMoment', 'kanban.directives'])
 
 .run(function($ionicPlatform) {
 
@@ -90,5 +91,13 @@ angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMomen
 
   
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/sign-in');
+  $urlRouterProvider.otherwise(function($injector, $location) {
+    var state = $injector.get('$state');
+    if(!!JSON.parse(window.localStorage["me"])) {
+      state.go('app.projects');
+    } else {
+      state.go('app.sign-in');
+    }
+    return $location.path();
+  });
 });

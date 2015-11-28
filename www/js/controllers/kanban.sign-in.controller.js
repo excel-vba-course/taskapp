@@ -12,6 +12,11 @@ var KanboardSignInController = function($ionicLoading, $scope,  $ionicActionShee
     return config;
 	};
 
+	$scope.logout = function() {
+		$scope.me = null;
+		$window.localStorage["me"] = null;
+	}
+
 	$scope.signIn = function(session) {
 		$ionicLoading.show({
 	    template: 'Loading...'
@@ -25,7 +30,7 @@ var KanboardSignInController = function($ionicLoading, $scope,  $ionicActionShee
 		});
 	}
 	if($window.localStorage["me"]) {
-		$scope.me = JSON.parse($window.localStorage["me"])	
+		$scope.me = JSON.parse($window.localStorage["me"]);
 	}
 }
 

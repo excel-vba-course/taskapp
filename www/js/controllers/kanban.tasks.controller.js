@@ -84,18 +84,27 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
   	});
   }
 
-	var request = '{"jsonrpc": "2.0","method": "getAllTasks", "id": 133280317, "params": {"project_id": '+$stateParams.projectId+', "status_id": 1}}';
-	$http.post(api_endpoint + '?getAllTasks', request, createConfig()).success(function(request) {
-		$ionicLoading.hide();
-    $scope.tasks = request.result;
-    angular.forEach($scope.tasks, function(task, i) {
-    	$scope.fetchTaskAssets(task);
-    })
-  });
+  $scope.doRefresh = function() {
+  	getTasks();
+  }
+
+
+  getTasks = function() {
+  	var request = '{"jsonrpc": "2.0","method": "getAllTasks", "id": 133280317, "params": {"project_id": '+$stateParams.projectId+', "status_id": 1}}';
+		$http.post(api_endpoint + '?getAllTasks', request, createConfig()).success(function(request) {
+			$ionicLoading.hide();
+	    $scope.tasks = request.result;
+	    angular.forEach($scope.tasks, function(task, i) {
+	    	$scope.fetchTaskAssets(task);
+	    })
+	    $scope.$broadcast('scroll.refreshComplete');
+	  });
+  } 
+	getTasks();
 
 }
 
-var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state) {
+var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, $q, $http, $window, $base64, $stateParams, $state, $ionicScrollDelegate) {
 
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
@@ -109,8 +118,12 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	};
 
 	$scope.mainContainerHeight = "350";
+
 	$scope.changeAction = function(actionName) {
 		$scope.action = actionName;
+		if(actionName == "show") {
+			loadTask();
+		}
 	}
 
 	var loadTask = function() {
@@ -125,6 +138,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 	      var request = JSON.stringify({"jsonrpc": "2.0","method": "getAllComments", "id": 133280317, "params": {"task_id": $stateParams.taskId}});
 	      $http.post(api_endpoint, request, createConfig()).success(function(request) {
 	      	$scope.task.comments = request.result;
+	      	$ionicScrollDelegate.scrollBottom();
 	      	$ionicLoading.hide();
 	      });
 	      angular.forEach($scope.tasks, function(task, i) {
@@ -195,6 +209,7 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 			} else {
 				$scope.task.comments.push({username: $scope.me.username, comment: newComment, date_creation: Date.now()/1000})
 				$scope.newComment = "";
+				$ionicScrollDelegate.scrollBottom();
 			}
     });
 	}
@@ -223,4 +238,4 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 }
 
 taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$interpolate', KanboardTasksController]);
-taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', KanboardTaskController]);
+taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$ionicScrollDelegate', KanboardTaskController]);
