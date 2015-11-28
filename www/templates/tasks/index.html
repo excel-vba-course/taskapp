@@ -6,11 +6,15 @@
 		<hr />
 
 		<div class="row">
-		  <div class="col col-75">
+		  <div class="col col-50">
 		  	<ul class="">
-					<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeFilter(hour)" ng-class="(hour.name == currentFilter.name) ? 'active' : ''">{{hour.name}}</li>
-				</ul>
-
+				<li class="button button-small button-calm" ng-repeat="hour in hourFilters" ng-click="changeHourFilter(hour)" ng-class="(hour.name == currentFilter.hour.name) ? 'active' : ''">{{hour.name}}</li>
+			</ul>
+		  </div>
+		  <div class="col col-25">
+		  	<ul class="">
+				<li class="button button-small button-calm" ng-repeat="user in userFilters" ng-click="changeUserFilter(user)" ng-class="(user.name == currentFilter.user.name) ? 'active' : ''">{{user.name}}</li>
+			</ul>
 		  </div>
 		  <div class="col">
 		  	<a ui-sref="app.tasks.new({projectId: projectId})" class="button button-small button-balanced pull-right">+ New Task</a>
@@ -28,7 +32,7 @@
 					<th>Created</th>
 				</thead>
 				<tbody>
-					<tr ng-repeat="task in tasks | inBetween:currentFilter.difference:todayInSeconds:'date_creation'" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
+					<tr ng-repeat="task in tasks | belongsTo:currentFilter.user.id |inBetween:currentFilter.hour.difference:todayInSeconds:'date_creation'" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
 						<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
 						<td><a href="">{{task.title}}</a></td>
 						<td>{{task.owner_name}}</td>

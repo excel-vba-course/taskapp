@@ -94,7 +94,7 @@ angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMomen
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise(function($injector, $location) {
     var state = $injector.get('$state');
-    if(!!JSON.parse(window.localStorage["me"])) {
+    if(!!JSON.parse(window.localStorage["me"] || null)) {
       state.go('app.projects');
     } else {
       state.go('app.sign-in');

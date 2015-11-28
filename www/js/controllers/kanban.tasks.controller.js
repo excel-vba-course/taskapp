@@ -31,9 +31,14 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
     }
 	}
 
-	$scope.changeFilter = function(hour) {
-		$scope.currentFilter = hour;
-		$window.localStorage["currentFilter"] = JSON.stringify(hour);
+	$scope.changeHourFilter = function(hour) {
+		$scope.currentFilter.hour = hour;
+		$window.localStorage["currentFilter"] = JSON.stringify($scope.currentFilter);
+	}
+
+	$scope.changeUserFilter = function(user) {
+		$scope.currentFilter.user = user;
+		$window.localStorage["currentFilter"] = JSON.stringify($scope.currentFilter);
 	}
 
 	$scope.clearFilter = function() {
@@ -57,10 +62,18 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
   	{name: "1 Week", difference: (Date.now() - 3600000*24*7)/1000},
   	{name: "1 Month", difference: (Date.now() - 3600000*24*30)/1000}
   ];
+
+  $scope.userFilters = [
+    {name: "All", id: null},
+  	{name: "Mine", id: $scope.me.id},
+  ];
   
   $scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null);
   if(!$scope.currentFilter)  // if not stored in local storage select All as default
-    $scope.currentFilter = $scope.hourFilters[0];
+    $scope.currentFilter = {
+    	hour: $scope.hourFilters[0],
+    	user: $scope.userFilters[0]
+    };
 
 
   $scope.fetchTaskAssets = function(task) {
@@ -224,17 +237,27 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 		comment.timeDisplay = timeDisplay;
 	};
 
-  $scope.$watch(function(scope) { return scope.currentFilter.name }, function(newValue, oldValue) {
-		var currentTaskList = $filter('inBetween')($scope.tasks, $scope.currentFilter.difference, $scope.todayInSeconds,'date_creation');
-		if(newValue != oldValue) {
-    	if(currentTaskList.indexOf($scope.task) == -1) {
-	    	if(currentTaskList.length != 0)
-	    		$state.go('app.tasks.task', {taskId: currentTaskList[0].id});
-	    	else
-	    		$state.go('app.tasks');
-	    }
-    }
+  $scope.$watch(function(scope) { return scope.currentFilter.user.name }, function(newValue, oldValue) {
+		if(newValue != oldValue)
+			decideOnTask();
   });
+
+  $scope.$watch(function(scope) { return scope.currentFilter.hour.name }, function(newValue, oldValue) {
+		if(newValue != oldValue)
+			decideOnTask();
+  });
+
+  var decideOnTask = function(){
+		var currentTaskList = $filter('inBetween')($scope.tasks, $scope.currentFilter.hour.difference, $scope.todayInSeconds,'date_creation');
+		currentTaskList = $filter('belongsTo')(currentTaskList, $scope.currentFilter.user.id);
+  	if(currentTaskList.indexOf($scope.task) == -1) {
+    	if(currentTaskList.length != 0)
+    		$state.go('app.tasks.task', {taskId: currentTaskList[0].id});
+    	else
+    		$state.go('app.tasks');
+	    
+    }
+  };
 
 }
 
