@@ -225,18 +225,3 @@ var KanboardTaskController = function($ionicLoading, $scope, $ionicActionSheet, 
 
 taskModule.controller('KanboardTasksController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$interpolate', KanboardTasksController]);
 taskModule.controller('KanboardTaskController', ['$ionicLoading', '$scope',  '$ionicActionSheet', '$q', '$http', '$window', '$base64', '$stateParams', '$state', '$filter', KanboardTaskController]);
-
-taskModule.filter("inbetween", function() {
-  return function(items, from, to, property) {
-        var arrayToReturn = [];        
-        for (var i=0; i<items.length; i++){
-            var fieldValue = parseInt(items[i][property]);
-            //console.log("fieldValue : "+ fieldValue+ " from: "+ from + " to: "+ to);
-            if (fieldValue > from && fieldValue < to)  {
-                arrayToReturn.push(items[i]);
-            }
-        }
-        
-        return arrayToReturn;
-  };
-});
