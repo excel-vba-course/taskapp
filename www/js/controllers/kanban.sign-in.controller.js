@@ -15,7 +15,7 @@ var KanboardSignInController = function($ionicLoading, $scope,  $ionicActionShee
 
 	$scope.logout = function() {
 		$scope.me = null;
-		$window.localStorage["me"] = null;
+		$window.localStorage.clear();
 	}
 
 	$scope.signIn = function(session) {

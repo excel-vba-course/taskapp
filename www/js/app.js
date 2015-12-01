@@ -13,21 +13,38 @@ angular.module('kanban.controllers', [])
 angular.module('kanban.directives',[]);
 angular.module('kanban', ['ionic', 'kanban.controllers', 'base64', 'angularMoment', 'kanban.directives'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $window, $state) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+  if ($window.cordova && $window.cordova.plugins.Keyboard) {
+    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    cordova.plugins.Keyboard.disableScroll(true);
 
-    }
-    if (window.StatusBar) {
+  }
+  if ($window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
   });
+
+  $rootScope.$on( '$stateChangeStart', function(e, toState  , toParams
+   , fromState, fromParams) {
+
+    var isLogin = toState.name === "app.sign-in";
+    if(isLogin){
+           return; // no need to redirect 
+         }
+        // now, redirect only not authenticated
+
+        var userInfo = $window.localStorage["me"];
+
+        if(userInfo == undefined) {
+            e.preventDefault(); // stop current execution
+            $state.go('app.sign-in'); // go to login
+          }
+        });
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
