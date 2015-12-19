@@ -4,6 +4,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 	$q, $http, $window, $base64, $stateParams, $state, $interpolate, $filter) {
 
 	$scope.tasks = [];
+  var selectedTaskId;
 	var createConfig = function() {
 		var session = JSON.parse($window.localStorage["session"]);
 		var auth = $base64.encode(session.username + ":" + session.password);
@@ -35,11 +36,13 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 	$scope.changeHourFilter = function(hour) {
 		$scope.currentFilter.hour = hour;
 		$window.localStorage["currentFilter"] = JSON.stringify($scope.currentFilter);
+    decideOnTask();
 	}
 
 	$scope.changeUserFilter = function(user) {
 		$scope.currentFilter.user = user;
 		$window.localStorage["currentFilter"] = JSON.stringify($scope.currentFilter);
+    decideOnTask();
 	}
 
 	$scope.clearFilter = function() {
@@ -48,6 +51,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
 	}
 
 	$scope.redirect = function(task) {
+    selectedTaskId = task.id;
 		$state.go('app.tasks.task', {taskId: task.id});
 	}
 
@@ -109,7 +113,7 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
   	}
 
 
-  	getTasks = function() {
+  	var getTasks = function() {
   		var request = '{"jsonrpc": "2.0","method": "getAllTasks", "id": 133280317, "params": {"project_id": '+$stateParams.projectId+', "status_id": 1}}';
   		$http.post(api_endpoint + '?getAllTasks', request, createConfig()).success(function(request) {
   			$ionicLoading.hide();
@@ -121,24 +125,17 @@ var KanboardTasksController = function($ionicLoading, $scope, $ionicActionSheet,
   			decideOnTask();
   		});
   	} 
+
   	getTasks();
 
-  	$scope.$watch(function(scope) { return scope.currentFilter.user.name }, function(newValue, oldValue) {
-  		if(newValue != oldValue)
-  			decideOnTask();
-  	});
-
-  	$scope.$watch(function(scope) { return scope.currentFilter.hour.name }, function(newValue, oldValue) {
-  		if(newValue != oldValue)
-  			decideOnTask();
-  	});
-  	var selectedTaskId;
+  	
   	var decideOnTask = function(){
   		var currentTaskList = $filter('inBetween')($scope.tasks, $scope.currentFilter.hour.difference, $scope.todayInSeconds,'date_creation');
   		currentTaskList = $filter('belongsTo')(currentTaskList, $scope.currentFilter.user.id);
-  		var taskIds = _.map(currentTaskList, function(task){
+      var taskIds = _.map(currentTaskList, function(task){
   			return task.id;
   		});
+      console.log(taskIds+ "selectedTaskId : "+ selectedTaskId+ "  "+ (taskIds.indexOf(selectedTaskId) == -1));
   		if(taskIds.indexOf(selectedTaskId) == -1) {
   			if(currentTaskList.length != 0){
   				selectedTaskId = currentTaskList[0].id;
