@@ -24,7 +24,7 @@
 	  	<ion-scroll scrollbar-y="false" direction="y" style="height:300px;">
 		  	<div ng-if="task.comments.length != 0">		
 					<div class="list">
-				    <div class="item item-thumbnail-left" href="" ng-repeat="comment in task.comments" ng-class="!!currentFilter && (currentFilter.difference < comment.date_creation*1000) ? 'highlight' : ''">
+				    <div class="item item-thumbnail-left" href="" ng-repeat="comment in task.comments" ng-class="!!currentFilter && (currentFilter.hour.difference < comment.date_creation*1000) ? 'highlight' : ''">
 				      <img src="img/user.png">
 				      <h2>
 				      	<b>{{comment.username}}</b> - 
