@@ -32,7 +32,7 @@
 					<th>Created</th>
 				</thead>
 				<tbody>
-					<tr ng-repeat="task in tasks | belongsTo:currentFilter.user.id |inBetween:currentFilter.hour.difference:todayInSeconds:'date_creation'" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
+					<tr ng-repeat="task in tasks | belongsTo:currentFilter.user.id:currentFilter.user.field |inBetween:currentFilter.hour.difference:todayInSeconds:'date_creation'" ng-click="redirect(task)" ng-class="task.highlight ? 'highlight' : ''">
 						<td style="background-color: {{task.color.background}}">#{{task.id}}</td>
 						<td><a href="">{{task.title}}</a></td>
 						<td>{{task.owner_name}}</td>

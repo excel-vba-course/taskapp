@@ -67,8 +67,9 @@ $scope.hourFilters = [
 ];
 
 $scope.userFilters = [
-{name: "All", id: null},
-{name: "Mine", id: $scope.me.id},
+{name: "All", id: null, field: null},
+{name: "Mine", id: $scope.me.id, field: "owner_id"},
+{name: "Other", id: $scope.me.id, field: "creator_id"},
 ];
 
 $scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null);
@@ -136,7 +137,7 @@ $scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null)
 
     var decideOnTask = function(){
       var currentTaskList = $filter('inBetween')($scope.tasks, $scope.currentFilter.hour.difference, $scope.todayInSeconds,'date_creation');
-      currentTaskList = $filter('belongsTo')(currentTaskList, $scope.currentFilter.user.id);
+      currentTaskList = $filter('belongsTo')(currentTaskList, $scope.currentFilter.user.id, $scope.currentFilter.user.field);
       var taskIds = _.map(currentTaskList, function(task){
        return parseInt(task.id);
       });

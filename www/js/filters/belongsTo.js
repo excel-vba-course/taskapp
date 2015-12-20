@@ -1,14 +1,13 @@
 var taskModule = angular.module('kanban.controllers');
 taskModule.filter("belongsTo", function() {
-  return function(items, id) {
+  return function(items, id, field) {
   	if(id == null)
   		return items;
     var arrayToReturn = [];        
     for (var i=0; i<items.length; i++){
-        var creatorId = items[i]['creator_id'];
-        var ownerId = items[i]['owner_id'];
+        var extractedField = items[i][field];
         
-    if (creatorId == id || ownerId == id)  {
+    if (extractedField == id)  {
             arrayToReturn.push(items[i]);
         }
     }
