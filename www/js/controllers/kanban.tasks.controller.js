@@ -108,6 +108,7 @@ $scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null)
   	}
 
   	$scope.doRefresh = function() {
+      $ionicLoading.show();
   		getTasks();
   	}
 

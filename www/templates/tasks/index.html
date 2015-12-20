@@ -16,6 +16,11 @@
 				<li class="button button-small button-calm" ng-repeat="user in userFilters" ng-click="changeUserFilter(user)" ng-class="(user.name == currentFilter.user.name) ? 'active' : ''">{{user.name}}</li>
 			</ul>
 		  </div>
+		  <div class="col col-15">
+		  	<ul class="">
+				<li class="button button-small button-balanced" ng-click="doRefresh()" >Refresh</li>
+			</ul>
+		  </div>
 		  <div class="col">
 		  	<a ui-sref="app.tasks.new({projectId: projectId})" class="button button-small button-balanced pull-right">+ New Task</a>
 		  </div>
