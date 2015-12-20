@@ -110,6 +110,7 @@ $scope.currentFilter = JSON.parse($window.localStorage["currentFilter"] || null)
   	$scope.doRefresh = function() {
       $ionicLoading.show();
   		getTasks();
+      $rootScope.$broadcast('reloadTask');
   	}
 
 
@@ -215,6 +216,12 @@ var loadTask = function() {
 }
 
 loadTask();
+
+$rootScope.$on("reloadTask", function(){
+  console.log("reloadTask");
+      loadTask();
+});
+
 $scope.action = "show"
 
 $scope.categories = JSON.parse($window.localStorage["categories"]);
